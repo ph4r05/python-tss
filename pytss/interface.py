@@ -1,6 +1,6 @@
 import functools
 import os
-from tspi_exceptions import *
+from pytss.tspi_exceptions import *
 
 from cffi import FFI, VerificationError
 INTERFACE_H = os.path.dirname(os.path.abspath(__file__)) + '/interface.h'

@@ -1,4 +1,5 @@
-from interface import tss_lib
+
+from pytss.interface import tss_lib
 
 TSS_NV_DEFINED = tss_lib.TSS_NV_DEFINED
 TPM_NV_INDEX_LOCK = tss_lib.TPM_NV_INDEX_LOCK

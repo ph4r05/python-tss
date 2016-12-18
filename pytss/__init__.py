@@ -1,5 +1,6 @@
-from interface import tss_lib, ffi
-import tspi_exceptions
+
+from pytss.interface import tss_lib, ffi
+import pytss.tspi_exceptions
 import hashlib
 
 
@@ -607,7 +608,7 @@ def _c_byte_array(data):
         the contents of data
     """
     cdata = ffi.new('BYTE []', len(data))
-    if isinstance(data, basestring):
+    if isinstance(data, str):
         data = bytearray(data)
     for i in range(len(data)):
         cdata[i] = data[i]
