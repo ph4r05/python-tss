@@ -222,7 +222,6 @@ class TspiHash(TspiObject):
         tss_lib.Tspi_Hash_Sign(self.get_handle(), key.get_handle(), csig_size, csig_data)
         return ffi.buffer(csig_data[0], csig_size[0])
 
-
 class TspiKey(TspiObject):
     def __init__(self, context, flags, handle=None):
         self.context = context
@@ -237,6 +236,51 @@ class TspiKey(TspiObject):
         # operation
         except tspi_exceptions.TSS_E_INVALID_HANDLE:
             pass
+    def bind(self,data):
+        """
+        Seal data to the local TPM using this key
+
+        :param data: The data to seal
+
+        :returns: a bytearray of the encrypted data
+        """
+        encdata = TspiObject(self.context, 'TSS_HENCDATA *',
+                             tss_lib.TSS_OBJECT_TYPE_ENCDATA,
+                             tss_lib.TSS_ENCDATA_BIND)
+
+        cdata = ffi.new('BYTE[]', len(data))
+        for i in range(len(data)):
+            cdata[i] = data[i]
+
+        tss_lib.Tspi_Data_Bind(encdata.get_handle(), self.get_handle(),
+                               len(data), cdata)
+        blob = encdata.get_attribute_data(tss_lib.TSS_TSPATTRIB_ENCDATA_BLOB,
+                                    tss_lib.TSS_TSPATTRIB_ENCDATABLOB_BLOB)
+        return bytearray(blob)
+
+    def unbind(self, data):
+        """
+        Unbind data from the local TPM using this key
+
+        :param data: The data to unbind
+
+        :returns: a bytearray of the unencrypted data
+        """
+        encdata = TspiObject(self.context, 'TSS_HENCDATA *',
+                             tss_lib.TSS_OBJECT_TYPE_ENCDATA,
+                             tss_lib.TSS_ENCDATA_BIND)
+
+        encdata.set_attribute_data(tss_lib.TSS_TSPATTRIB_ENCDATA_BLOB,
+                                tss_lib.TSS_TSPATTRIB_ENCDATABLOB_BLOB, data)
+
+        bloblen = ffi.new('UINT32 *')
+        blob = ffi.new('BYTE **')
+
+        tss_lib.Tspi_Data_Unbind(encdata.get_handle(), self.get_handle(),
+                                 bloblen, blob)
+        ret = bytearray(blob[0][0:bloblen[0]])
+        tss_lib.Tspi_Context_FreeMemory(self.context, blob[0])
+        return ret
 
     def set_modulus(self, n):
         """
@@ -336,6 +380,9 @@ class TspiTPM(TspiObject):
         tss_lib.Tspi_Context_GetTpmObject(context, tpm)
         self.handle = tpm
         self.context = context
+
+    def load_key_by_handle(self, keyHandle, wrappingKeyHandle):
+        tss_lib.Tspi_Key_LoadKey(keyHandle, wrappingKeyHandle)
 
     def collate_identity_request(self, srk, pubkey, aik):
         """
@@ -490,6 +537,19 @@ class TspiTPM(TspiObject):
         return ret
 
 
+class TspiWrapKey(TspiKey):
+    def __init__(self, context, flags, wrappingKeyHandle):
+        self.context = context
+        self.parent=wrappingKeyHandle
+        super(TspiWrapKey, self).__init__(self.context, flags)
+        blaa = self.get_handle()
+        tss_lib.Tspi_Key_CreateKey(self.get_handle(),self.parent,0)
+        self.load_key()
+
+    def load_key(self):
+        tss_lib.Tspi_Key_LoadKey(self.get_handle(), self.parent)
+
+
 class TspiContext():
     def __init__(self):
         self.context = ffi.new('TSS_HCONTEXT *')
@@ -550,6 +610,10 @@ class TspiContext():
         :param flags: Flags to pass
         """
         obj = TspiHash(self.context, flags)
+        return obj
+
+    def create_wrap_key(self,flags,wrappingkeyHandle):
+        obj = TspiWrapKey(self.context,flags,wrappingkeyHandle)
         return obj
 
     def create_rsa_key(self, flags):
