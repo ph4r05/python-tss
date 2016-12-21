@@ -186,6 +186,7 @@ class TspiPCRs(TspiObject):
             tss_lib.Tspi_Context_FreeMemory(self.context, buf[0])
         return self.pcrs
 
+
 class TspiHash(TspiObject):
     def __init__(self, context, flags):
         super(TspiHash, self).__init__(context, 'TSS_HHASH *',
@@ -222,6 +223,7 @@ class TspiHash(TspiObject):
         tss_lib.Tspi_Hash_Sign(self.get_handle(), key.get_handle(), csig_size, csig_data)
         return ffi.buffer(csig_data[0], csig_size[0])
 
+
 class TspiKey(TspiObject):
     def __init__(self, context, flags, handle=None):
         self.context = context
@@ -236,6 +238,7 @@ class TspiKey(TspiObject):
         # operation
         except tspi_exceptions.TSS_E_INVALID_HANDLE:
             pass
+
     def bind(self,data):
         """
         Seal data to the local TPM using this key
@@ -317,7 +320,6 @@ class TspiKey(TspiObject):
         """
         return self.get_attribute_data(tss_lib.TSS_TSPATTRIB_RSAKEY_INFO,
                                        tss_lib.TSS_TSPATTRIB_KEYINFO_RSA_MODULUS)
-
 
     def seal(self, data, pcrs=None):
         """

@@ -12,6 +12,7 @@ ffi = FFI()
 ffi.cdef(open(INTERFACE_H, 'r').read())
 tss_lib = ffi.verify('#include <trousers/tss.h>', libraries=['tspi'])
 
+
 def wrap_libtspi_func(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -367,6 +368,7 @@ def wrap_libtspi_func(func):
                 raise TpmException("Unknown Error %x" % ret)
             
     return wrapper
+
 
 tss_lib.Tspi_EncodeDER_TssBlob = wrap_libtspi_func(tss_lib.Tspi_EncodeDER_TssBlob)
 tss_lib.Tspi_DecodeBER_TssBlob = wrap_libtspi_func(tss_lib.Tspi_DecodeBER_TssBlob)
