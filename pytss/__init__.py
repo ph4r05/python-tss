@@ -474,6 +474,21 @@ class TspiTPM(TspiObject):
         tss_lib.Tspi_Context_FreeMemory(self.context, blob[0])
         return ret
 
+    def generate_random_data(self, length):
+        """
+        Generates random data in TPM of the given length in bytes.
+
+        :param length: Length of data to generate in bytes
+
+        :return: bytearray containing the random data
+        """
+        blob = ffi.new('BYTE **')
+        tss_lib.Tspi_TPM_GetRandom(self.get_handle(), length, blob)
+        ret = bytearray(blob[0][0:length])
+        tss_lib.Tspi_Context_FreeMemory(self.context, blob[0])
+        return ret
+
+
 class TspiContext():
     def __init__(self):
         self.context = ffi.new('TSS_HCONTEXT *')
