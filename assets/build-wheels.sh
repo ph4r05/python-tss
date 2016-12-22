@@ -12,10 +12,12 @@ done
 
 ls -las wheelhouse/
 rm -rf wheelhouse/pycparser-*.whl
-rm -rf wheelhouse/*none-any.whl
+# rm -rf wheelhouse/*none-any.whl
+ls -las wheelhouse/
 
 # Bundle external shared libraries into the wheels
 for whl in wheelhouse/*.whl; do
+    echo "Audit wheel for $whl"
     auditwheel repair "$whl" -w /io/wheelhouse/
 done
 
