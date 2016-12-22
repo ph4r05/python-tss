@@ -11,15 +11,22 @@ Author: Matthew Garrett (matthew.garrett@nebula.com)
 Installation
 ------------
 
-``pip install pytss``
+.. code-block:: bash
+
+    pip install pytss
+
 
 Dependencies
 ------------
 
 * Debian / Ubuntu
-``sudo apt-get install tpm-tools libtspi-dev libopencryptoki-dev libssl-dev``
+.. code-block:: bash
+
+    sudo apt-get install tpm-tools libtspi-dev libopencryptoki-dev libssl-dev
 
 * Redhat / Fedora
-``sudo yum install tpm-tools opencryptoki-devel trousers-devel openssl-devel``
+.. code-block:: bash
+
+    sudo yum install tpm-tools opencryptoki-devel trousers-devel openssl-devel``
 
 
