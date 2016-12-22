@@ -32,7 +32,7 @@ __all__ = [
 __title__ = "pytss"
 __summary__ = "Python binding to libtspi"
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 
 __author__ = "Matthew Garrett"
 __email__ = "matthew.garrett@nebula.com"

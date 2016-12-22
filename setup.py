@@ -43,6 +43,7 @@ setup(
     version=__about__['__version__'],
 
     description=__about__['__summary__'],
+    url='https://github.com/ph4r05/python-tss',
     license=open('LICENSE').read(),
 
     author=__about__['__author__'],
