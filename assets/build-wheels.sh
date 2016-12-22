@@ -13,6 +13,7 @@ for PYBIN in /opt/python/*/bin; do
     "${PYBIN}/pip" wheel /io/ -w wheelhouse/
 done
 
+pwd
 ls -las wheelhouse/
 #rm -rf wheelhouse/pycparser-*.whl
 #rm -rf wheelhouse/*none-any.whl
@@ -28,6 +29,7 @@ for whl in wheelhouse/*.whl; do
     auditwheel repair "$whl" -w /io/wheelhouse/
 done
 
+pwd
 ls -las wheelhouse/
 
 # Install packages and test
