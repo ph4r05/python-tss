@@ -9,15 +9,13 @@ find /io/
 
 # Compile wheels
 for PYBIN in /opt/python/*/bin; do
-    "${PYBIN}/pip" install -r /io/dev-requirements.txt
+    "${PYBIN}/pip" install --upgrade pip wheel
+    "${PYBIN}/pip" install --upgrade -r /io/dev-requirements.txt
     "${PYBIN}/pip" wheel /io/ -w wheelhouse/
 done
 
 pwd
 ls -las wheelhouse/
-#rm -rf wheelhouse/pycparser-*.whl
-#rm -rf wheelhouse/*none-any.whl
-#ls -las wheelhouse/
 
 # Bundle external shared libraries into the wheels
 for whl in wheelhouse/*.whl; do
