@@ -12,7 +12,7 @@ done
 
 ls -las wheelhouse/
 rm -rf wheelhouse/pycparser-*.whl
-# rm -rf wheelhouse/*none-any.whl
+rm -rf wheelhouse/*none-any.whl
 ls -las wheelhouse/
 
 # Bundle external shared libraries into the wheels
